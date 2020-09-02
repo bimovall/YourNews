@@ -1,15 +1,49 @@
 package bivano.apps.homefeature
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import bivano.apps.common.Result
+import bivano.apps.common.model.Article
+import bivano.apps.domain.usecase.LoadHeadlinesUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class HomeViewModel
-@ViewModelInject constructor() : ViewModel() {
+@Inject constructor(
+    private val loadHeadlineUseCase: LoadHeadlinesUseCase
+) : ViewModel() {
 
-    val data:MutableLiveData<String> = MutableLiveData()
+    val articleData: MutableLiveData<List<Article>> = MutableLiveData()
 
-    fun loadData() {
-        data.value = "Load data"
+    val featuredData: MutableLiveData<List<Article>> = MutableLiveData()
+
+    @ExperimentalCoroutinesApi
+    fun loadData(category: String?) {
+        //TODO handle error response
+        viewModelScope.launch {
+            loadHeadlineUseCase.execute(LoadHeadlinesUseCase.Params(category, 1)).collect {
+                when (it) {
+                    is Result.Success -> {
+                        if (it.data.size > 4) {
+                            featuredData.value = it.data.subList(0, 5)
+                            articleData.value = it.data.subList(5, it.data.size)
+                        } else {
+                            featuredData.value = it.data
+                            articleData.value = listOf()
+                        }
+                    }
+                    is Result.ResponseError -> {
+                        println("Check load ResponseError : ${it.failure}")
+                    }
+
+                    is Result.GeneralError -> {
+                        println("Check load ResponseError : ${it.exception}")
+                    }
+                }
+            }
+        }
     }
 }

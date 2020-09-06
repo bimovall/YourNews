@@ -18,4 +18,25 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <style name="Text.Title" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="Text.Body" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#B3000000</item>
+    </style>
+
+    <style name="ChipFilterStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="checkedIconTint">@android:color/white</item>
+        <item name="android:textColor">@color/selector_chip_text</item>
+        <item name="chipBackgroundColor">@color/selector_chip</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="chipStartPadding">4dp</item>
+    </style>
+
 </resources>

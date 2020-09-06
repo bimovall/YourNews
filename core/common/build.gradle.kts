@@ -4,9 +4,10 @@ plugins {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    api(Dependencies.materialGoogleDep)
-    api(Dependencies.constraintLayoutDep)
-    api(Dependencies.fragmentKtx)
+    api(Dependencies.glideDep)
+    sharedDesign()
+    sharedAppCompat()
     sharedDaggerHilt()
     sharedHiltLifecycle()
+    sharedNavigationArch()
 }

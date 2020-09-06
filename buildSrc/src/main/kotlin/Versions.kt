@@ -19,6 +19,7 @@ object Versions {
     const val playCoreKtxVersion = "1.8.1"
     const val hiltLifecycleVersion = "1.0.0-alpha01"
     const val fragmentKtxVersion = "1.2.5"
+    const val gsonConverterVersion = "2.9.0"
 
     const val minSdkVersion = 21
     const val targetSdkVersion = 29

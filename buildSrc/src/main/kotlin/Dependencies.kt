@@ -6,6 +6,7 @@ import Dependencies.daggerHiltProcessorDep
 import Dependencies.espressoDep
 import Dependencies.glideDep
 import Dependencies.glideProcessorDep
+import Dependencies.gsonConverterDep
 import Dependencies.hiltLifecycleDep
 import Dependencies.hiltProcessorDep
 import Dependencies.junitDep
@@ -60,6 +61,7 @@ object Dependencies {
     //network
     const val retrofitDep = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
     const val okhttpLoggingDep = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpLoggingVersion}"
+    const val gsonConverterDep = "com.squareup.retrofit2:converter-gson:${Versions.gsonConverterVersion}"
 
     // Coroutines
     const val coroutineApi = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
@@ -84,6 +86,7 @@ object Dependencies {
 fun DependencyHandler.network() {
     implementation(retrofitDep)
     implementation(okhttpLoggingDep)
+    implementation(gsonConverterDep)
 }
 
 fun DependencyHandler.playCore() {
@@ -94,6 +97,11 @@ fun DependencyHandler.playCore() {
 fun DependencyHandler.design() {
     implementation(constraintLayoutDep)
     implementation(materialGoogleDep)
+}
+
+fun DependencyHandler.sharedDesign() {
+    api(constraintLayoutDep)
+    api(materialGoogleDep)
 }
 
 fun DependencyHandler.daggerHilt() {
@@ -121,6 +129,12 @@ fun DependencyHandler.appCompat() {
     implementation(coreKtxDep)
 }
 
+
+fun DependencyHandler.sharedAppCompat() {
+    api(appCompatDep)
+    api(coreKtxDep)
+}
+
 fun DependencyHandler.lifecycleComponent() {
     implementation(lifecycle)
 }
@@ -129,6 +143,12 @@ fun DependencyHandler.navigationArch() {
     implementation(navigationKtxDep)
     implementation(navigationUiKtx)
     implementation(navigationDynamicDep)
+}
+
+fun DependencyHandler.sharedNavigationArch() {
+    api(navigationKtxDep)
+    api(navigationUiKtx)
+    api(navigationDynamicDep)
 }
 
 fun DependencyHandler.glide() {

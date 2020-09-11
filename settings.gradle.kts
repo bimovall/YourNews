@@ -1,5 +1,4 @@
 include(":core:common")
-include(":core:domain")
 include(":core:data")
 include(":features:achievedfeature")
 include(":features:articlefeature")

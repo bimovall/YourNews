@@ -23,4 +23,13 @@ interface NewsService {
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int
     ): Response<NewsResponse>
+
+    @GET("v2/everything")
+    suspend fun getArticle(
+        @Query("qInTitle") query: String,
+        @Query("sortBy") sort: String,
+        @Query("language") language: String,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): Response<NewsResponse>
 }

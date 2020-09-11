@@ -1,8 +1,8 @@
-package bivano.apps.homefeature.di
+package bivano.apps.articlefeature.di
 
 import androidx.lifecycle.ViewModel
+import bivano.apps.articlefeature.ArticleViewModel
 import bivano.apps.common.di.ViewModelKey
-import bivano.apps.homefeature.HomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -11,11 +11,11 @@ import dagger.multibindings.IntoMap
 
 @Module
 @InstallIn(FragmentComponent::class)
-abstract class HomeModule {
+abstract class ArticleModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(HomeViewModel::class)
-    abstract fun bindHomeViewModel(homeViewModel: HomeViewModel): ViewModel
+    @ViewModelKey(ArticleViewModel::class)
+    abstract fun bindArticleViewModel(articleViewModel: ArticleViewModel): ViewModel
 
 }

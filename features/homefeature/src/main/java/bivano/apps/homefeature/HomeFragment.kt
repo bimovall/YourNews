@@ -65,18 +65,13 @@ class HomeFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar.logo = ContextCompat.getDrawable(requireContext(), R.drawable.ic_search)
+        //toolbar.logo = ContextCompat.getDrawable(requireContext(), bivano.apps.common.R.drawable.ic_search)
         collapsing_toolbar.setupWithNavController(toolbar, findNavController())
         homeViewModel.loadData(null)
         initRecyclerView()
         initViewPager()
         initChipFilter()
-        initSearchView()
         observeData()
-    }
-
-    private fun initSearchView() {
-        TODO("Add search feature")
     }
 
     @ExperimentalCoroutinesApi

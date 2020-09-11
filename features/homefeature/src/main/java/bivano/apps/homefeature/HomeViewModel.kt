@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
-import bivano.apps.domain.usecase.LoadHeadlinesUseCase
+import bivano.apps.data.repository.headline.HeadlineRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 class HomeViewModel
 @Inject constructor(
-    private val loadHeadlineUseCase: LoadHeadlinesUseCase
+    private val headlineRepository: HeadlineRepository
+
 ) : ViewModel() {
 
     val articleData: MutableLiveData<List<Article>> = MutableLiveData()
@@ -24,7 +25,7 @@ class HomeViewModel
     fun loadData(category: String?) {
         //TODO handle error response
         viewModelScope.launch {
-            loadHeadlineUseCase.execute(LoadHeadlinesUseCase.Params(category, 1)).collect {
+            headlineRepository.loadHeadline(category).collect {
                 when (it) {
                     is Result.Success -> {
                         if (it.data.size > 4) {
@@ -35,10 +36,10 @@ class HomeViewModel
                             articleData.value = listOf()
                         }
                     }
+
                     is Result.ResponseError -> {
                         println("Check load ResponseError : ${it.failure}")
                     }
-
                     is Result.GeneralError -> {
                         println("Check load ResponseError : ${it.exception}")
                     }

@@ -17,6 +17,8 @@ import kotlin.math.min
 class HomeAdapter(private val listArticle: List<Article>) :
     RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
+    var itemClick: ((Article)-> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(bivano.apps.common.R.layout.view_news_item, parent, false)
@@ -32,7 +34,7 @@ class HomeAdapter(private val listArticle: List<Article>) :
         holder.bindView(item)
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindView(item: Article) {
             itemView.exportedTextViewTitle.text = item.title
             itemView.exportedTextViewDesc.text = item.description
@@ -42,6 +44,10 @@ class HomeAdapter(private val listArticle: List<Article>) :
                 .load(item.urlToImage)
                 .transform(CenterCrop(), RoundedCorners(12))
                 .into(itemView.exportedImageNews)
+
+            itemView.setOnClickListener {
+                itemClick?.invoke(item)
+            }
         }
 
     }

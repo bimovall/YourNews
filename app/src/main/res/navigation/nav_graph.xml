@@ -8,12 +8,29 @@
         android:id="@+id/action_home"
         android:name="bivano.apps.homefeature.HomeFragment"
         app:moduleName="@string/title_homefeature"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_action_home_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/action_article"
         android:name="bivano.apps.articlefeature.ArticleFragment"
         app:moduleName="@string/title_articlefeature"
-        android:label="ArticleFragment" />
+        android:label="ArticleFragment" >
+        <action
+            android:id="@+id/action_action_article_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="bivano.apps.detailfeature.DetailFragment"
+        app:moduleName="detailFeature"
+        android:label="DetailFragment" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

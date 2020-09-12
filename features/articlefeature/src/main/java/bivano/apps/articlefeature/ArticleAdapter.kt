@@ -17,9 +17,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class ArticleAdapter : PagedListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDiffCallback) {
 
+    var onItemClick: ((Article) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         //TODO type "progress" and "article"
-        val view = LayoutInflater.from(parent.context).inflate(bivano.apps.common.R.layout.view_news_item, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(bivano.apps.common.R.layout.view_news_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -32,6 +35,7 @@ class ArticleAdapter : PagedListAdapter<Article, ArticleAdapter.ViewHolder>(Arti
         println("CHeck onBindViewHolder")
     }
 
+    //unused for now
     inner class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindItems(item: Article?) {
             itemView.exportedTextViewTitle.text = item?.title
@@ -46,16 +50,22 @@ class ArticleAdapter : PagedListAdapter<Article, ArticleAdapter.ViewHolder>(Arti
 
     }
 
-    inner class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindItems(item: Article?) {
-            itemView.exportedTextViewTitle.text = item?.title
-            itemView.exportedTextViewDesc.text = item?.description
-            itemView.exportedTextViewTime.text = item?.publishedAt.toString()
+            item?.apply {
+                itemView.exportedTextViewTitle.text = item.title
+                itemView.exportedTextViewDesc.text = item.description
+                itemView.exportedTextViewTime.text = item.publishedAt.toString()
 
-            Glide.with(itemView.context)
-                .load(item?.urlToImage)
-                .transform(CenterCrop(), RoundedCorners(12))
-                .into(itemView.exportedImageNews)
+                Glide.with(itemView.context)
+                    .load(item.urlToImage)
+                    .transform(CenterCrop(), RoundedCorners(12))
+                    .into(itemView.exportedImageNews)
+
+                itemView.setOnClickListener {
+                    onItemClick?.invoke(item)
+                }
+            }
         }
     }
 

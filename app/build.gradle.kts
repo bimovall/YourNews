@@ -32,7 +32,7 @@ android {
     }
 
     dynamicFeatures = mutableSetOf(":features:homefeature", ":features:articlefeature",
-        ":features:achievedfeature"
+        ":features:achievedfeature", ":features:detailFeature"
     )
 }
 

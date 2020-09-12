@@ -21,7 +21,6 @@ class ArticleRepositoryImpl
         query: String,
         sort: String
     ): LiveData<PagedList<Article>> {
-        println("Check query : $query")
         dataSourceFactory =
             ArticlePagedDataFactory(
                 coroutineScope = coroutineScope,

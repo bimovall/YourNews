@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.articlefeature.di.DaggerArticleComponent
 import bivano.apps.common.Result
@@ -18,6 +19,7 @@ import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_article.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -30,6 +32,8 @@ class ArticleFragment : Fragment() {
     private val articleViewModel by viewModels<ArticleViewModel> { viewModelFactory }
 
     private lateinit var articleAdapter: ArticleAdapter
+
+    private var lastQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()
@@ -64,7 +68,10 @@ class ArticleFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
         articleAdapter = ArticleAdapter()
         recyclerview.adapter = articleAdapter
-
+        articleAdapter.onItemClick = {
+            val action = ArticleFragmentDirections.actionActionArticleToDetailFragment(it.url)
+            findNavController().navigate(action)
+        }
     }
 
     private fun observeData() {
@@ -100,8 +107,12 @@ class ArticleFragment : Fragment() {
         edit_search
             .debouncingText()
             .debounce(500)
+            .filter {
+                it != lastQuery
+            }
             .onEach {
                 articleViewModel.loadArticle(it, "relevancy")
+                lastQuery = it
             }
             .launchIn(lifecycleScope)
     }

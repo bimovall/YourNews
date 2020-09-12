@@ -67,7 +67,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //toolbar.logo = ContextCompat.getDrawable(requireContext(), bivano.apps.common.R.drawable.ic_search)
         collapsing_toolbar.setupWithNavController(toolbar, findNavController())
-        homeViewModel.loadData(null)
         initRecyclerView()
         initViewPager()
         initChipFilter()
@@ -154,5 +153,10 @@ class HomeFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
         homeAdapter = HomeAdapter(listArticle)
         recyclerview.adapter = homeAdapter
+
+        homeAdapter.itemClick = {
+            val action = HomeFragmentDirections.actionActionHomeToDetailFragment(it.url)
+            findNavController().navigate(action)
+        }
     }
 }

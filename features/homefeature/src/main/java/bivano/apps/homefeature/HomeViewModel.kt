@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel
 @Inject constructor(
     private val headlineRepository: HeadlineRepository
@@ -21,7 +22,10 @@ class HomeViewModel
 
     val featuredData: MutableLiveData<List<Article>> = MutableLiveData()
 
-    @ExperimentalCoroutinesApi
+    init {
+        loadData(null)
+    }
+
     fun loadData(category: String?) {
         //TODO handle error response
         viewModelScope.launch {
@@ -42,6 +46,9 @@ class HomeViewModel
                     }
                     is Result.GeneralError -> {
                         println("Check load ResponseError : ${it.exception}")
+                    }
+                    is Result.Loading -> {
+                        println("Check load Loading :")
                     }
                 }
             }

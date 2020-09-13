@@ -1,8 +1,8 @@
 package bivano.apps.data.di
 
+import bivano.apps.data.BuildConfig
 import bivano.apps.data.remote.NewsService
 import bivano.apps.data.remote.RemoteDataSource
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +32,7 @@ class NetModule {
             .addInterceptor(loggingInterceptor)
             .addInterceptor(Interceptor.invoke {
                 val request: Request =
-                    it.request().newBuilder().addHeader("X-Api-Key", "047bec8f1df143de935075a3b72762dd").build()
+                    it.request().newBuilder().addHeader("X-Api-Key", BuildConfig.NewsApiKey).build()
                 return@invoke it.proceed(request)
             }).build()
     }

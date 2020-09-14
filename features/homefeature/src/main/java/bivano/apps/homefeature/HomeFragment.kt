@@ -83,6 +83,9 @@ class HomeFragment : Fragment() {
     private fun initViewPager() {
         homeFeaturedAdapter = HomeFeaturedAdapter(listFeaturedArticle)
         view_pager.adapter = homeFeaturedAdapter
+        homeFeaturedAdapter.featuredItemClick = {
+            navigateToDetail(it.url)
+        }
     }
 
     private fun observeData() {
@@ -155,8 +158,12 @@ class HomeFragment : Fragment() {
         recyclerview.adapter = homeAdapter
 
         homeAdapter.itemClick = {
-            val action = HomeFragmentDirections.actionActionHomeToDetailFragment(it.url)
-            findNavController().navigate(action)
+            navigateToDetail(it.url)
         }
+    }
+
+    private fun navigateToDetail(url: String) {
+        val action = HomeFragmentDirections.actionActionHomeToDetailFragment(url)
+        findNavController().navigate(action)
     }
 }

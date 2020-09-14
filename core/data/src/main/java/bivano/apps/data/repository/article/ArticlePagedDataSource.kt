@@ -4,12 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
-import bivano.apps.common.model.Source
 import bivano.apps.data.remote.RemoteDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class ArticlePagedDataSource(
     private val coroutineScope: CoroutineScope,
@@ -18,6 +16,7 @@ class ArticlePagedDataSource(
     private val category: String
 ) : PageKeyedDataSource<Int, Article>() {
 
+    val initialStateResultData = MutableLiveData<Result<List<Article>>>()
     val stateResultData = MutableLiveData<Result<List<Article>>>()
 
     override fun loadInitial(
@@ -25,12 +24,12 @@ class ArticlePagedDataSource(
         callback: LoadInitialCallback<Int, Article>
     ) {
         coroutineScope.launch(Dispatchers.IO) {
-           stateResultData.postValue(Result.Loading)
+            initialStateResultData.postValue(Result.Loading)
             val response = remoteDataSource.loadArticles(query, category, 1)
-            if (response is  Result.Success) {
+            if (response is Result.Success) {
                 callback.onResult(response.data, null, 2)
             }
-            stateResultData.postValue(response)
+            initialStateResultData.postValue(response)
         }
     }
 
@@ -39,11 +38,10 @@ class ArticlePagedDataSource(
         coroutineScope.launch {
             stateResultData.value = Result.Loading
             val response = remoteDataSource.loadArticles(query, category, params.key)
-            if (response is  Result.Success) {
+            if (response is Result.Success) {
                 callback.onResult(response.data, params.key + 1)
-            } else {
-                stateResultData.value = response
             }
+            stateResultData.value = response
         }
     }
 

@@ -14,6 +14,8 @@ interface ArticleRepository {
         sort: String
     ): LiveData<PagedList<Article>>
 
+    fun getInitialNetworkResult(): LiveData<Result<List<Article>>>
+
     fun getNetworkResult(): LiveData<Result<List<Article>>>
 
     fun search(query: String, sort: String)

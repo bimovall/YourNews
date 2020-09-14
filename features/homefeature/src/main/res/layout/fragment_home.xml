@@ -190,7 +190,9 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar" />
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        android:paddingBottom="?attr/actionBarSize"
+        android:clipToPadding="false"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

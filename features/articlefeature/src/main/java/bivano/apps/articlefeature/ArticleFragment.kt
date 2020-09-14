@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,6 +16,8 @@ import bivano.apps.common.Result
 import bivano.apps.common.extension.debouncingText
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.yournews.di.DynamicModuleDependencies
+import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_article.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +37,8 @@ class ArticleFragment : Fragment() {
     private lateinit var articleAdapter: ArticleAdapter
 
     private var lastQuery = ""
+
+    private var lastSort = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()
@@ -61,38 +66,74 @@ class ArticleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initSearchView()
         initRecyclerView()
+        initChipFilter()
         observeData()
+    }
+
+    private fun initChipFilter() {
+        chip_group.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId) {
+                R.id.chip_popularity -> {
+                    lastSort = "popularity"
+                    articleViewModel.loadArticle(lastQuery, lastSort)
+                }
+                R.id.chip_latest -> {
+                    lastSort = "publishedAt"
+                    articleViewModel.loadArticle(lastQuery, "publishedAt")
+                }
+                R.id.chip_relevance -> {
+                    lastSort = "relevancy"
+                    articleViewModel.loadArticle(lastQuery, "relevancy")
+                }
+            }
+        }
     }
 
     private fun initRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
         articleAdapter = ArticleAdapter()
-        recyclerview.adapter = articleAdapter
-        articleAdapter.onItemClick = {
-            val action = ArticleFragmentDirections.actionActionArticleToDetailFragment(it.url)
-            findNavController().navigate(action)
+        articleAdapter.apply {
+            recyclerview.adapter = this
+            onItemClick = {
+                val action = ArticleFragmentDirections.actionActionArticleToDetailFragment(it.url)
+                findNavController().navigate(action)
+            }
         }
     }
 
     private fun observeData() {
         articleViewModel.networkStateData.observe(viewLifecycleOwner, Observer {
-            println("CHeck state : $it")
-            //TODO set view based on state
+            articleAdapter.setNetworkState(it)
+            when (it) {
+                is Result.ResponseError -> {
+                    showErrorMessage(it.failure.message!!)
+                }
+                is Result.GeneralError -> {
+                    showErrorMessage("There's something wrong")
+                }
+            }
+        })
+
+        articleViewModel.initialNetworkStateData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Loading -> {
 
                 }
                 is Result.Success -> {
-
+                    if (it.data.isEmpty()) {
+                        container_empty.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+                    } else {
+                        container_empty.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+                    }
                 }
                 is Result.ResponseError -> {
-
+                    showErrorMessage(it.failure.message!!)
                 }
                 is Result.GeneralError -> {
 
                 }
-
-
             }
         })
 
@@ -100,6 +141,11 @@ class ArticleFragment : Fragment() {
             articleAdapter.submitList(it)
         })
 
+    }
+
+    private fun showErrorMessage(message: String) {
+        //Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     @ExperimentalCoroutinesApi
@@ -111,7 +157,7 @@ class ArticleFragment : Fragment() {
                 it != lastQuery
             }
             .onEach {
-                articleViewModel.loadArticle(it, "relevancy")
+                articleViewModel.loadArticle(it, lastSort)
                 lastQuery = it
             }
             .launchIn(lifecycleScope)

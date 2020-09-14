@@ -36,6 +36,13 @@ class ArticleRepositoryImpl
         return LivePagedListBuilder(dataSourceFactory, config).build()
     }
 
+    override fun getInitialNetworkResult(): LiveData<Result<List<Article>>> {
+        if (!::dataSourceFactory.isInitialized) throw RuntimeException("You haven't initiated DataSource.Factory ")
+        return Transformations.switchMap(
+            dataSourceFactory.resultData, ArticlePagedDataSource::initialStateResultData
+        )
+    }
+
     override fun getNetworkResult(): LiveData<Result<List<Article>>> {
         if (!::dataSourceFactory.isInitialized) throw RuntimeException("You haven't initiated DataSource.Factory ")
         return Transformations.switchMap(

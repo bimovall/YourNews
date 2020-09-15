@@ -1,6 +1,7 @@
 package bivano.apps.homefeature.di
 
 import bivano.apps.homefeature.HomeFragment
+import bivano.apps.homefeature.list.ListHeadlineFragment
 import bivano.apps.yournews.di.DynamicModuleDependencies
 import dagger.Component
 
@@ -11,6 +12,8 @@ import dagger.Component
 interface HomeComponent {
 
     fun inject(fragment: HomeFragment)
+
+    fun inject(fragment: ListHeadlineFragment)
 
     /*@Component.Builder
     interface Builder {

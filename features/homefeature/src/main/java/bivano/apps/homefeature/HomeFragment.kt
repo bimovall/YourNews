@@ -40,6 +40,7 @@ class HomeFragment : Fragment() {
 
     private val listFeaturedArticle = ArrayList<Article>()
 
+    private var category = "general"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()
@@ -71,12 +72,18 @@ class HomeFragment : Fragment() {
         initViewPager()
         initChipFilter()
         observeData()
+
+        label_see_all.setOnClickListener {
+            val action = HomeFragmentDirections.actionActionHomeToListHeadlineFragment(category)
+            findNavController().navigate(action)
+        }
     }
 
     @ExperimentalCoroutinesApi
     private fun initChipFilter() {
         chip_group.setOnCheckedChangeListener { group, checkedId ->
-            homeViewModel.loadData(group.findViewById<Chip>(checkedId).text.toString())
+            category = group.findViewById<Chip>(checkedId).text.toString()
+            homeViewModel.loadData(category)
         }
     }
 

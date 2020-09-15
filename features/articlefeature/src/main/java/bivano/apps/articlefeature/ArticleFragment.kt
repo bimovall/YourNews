@@ -13,11 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.articlefeature.di.DaggerArticleComponent
 import bivano.apps.common.Result
+import bivano.apps.common.adapter.ArticlePagedListAdapter
 import bivano.apps.common.extension.debouncingText
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.yournews.di.DynamicModuleDependencies
-import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_article.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +33,7 @@ class ArticleFragment : Fragment() {
 
     private val articleViewModel by viewModels<ArticleViewModel> { viewModelFactory }
 
-    private lateinit var articleAdapter: ArticleAdapter
+    private lateinit var articleAdapter: ArticlePagedListAdapter
 
     private var lastQuery = ""
 
@@ -72,7 +71,7 @@ class ArticleFragment : Fragment() {
 
     private fun initChipFilter() {
         chip_group.setOnCheckedChangeListener { group, checkedId ->
-            when(checkedId) {
+            when (checkedId) {
                 R.id.chip_popularity -> {
                     lastSort = "popularity"
                     articleViewModel.loadArticle(lastQuery, lastSort)
@@ -91,7 +90,7 @@ class ArticleFragment : Fragment() {
 
     private fun initRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
-        articleAdapter = ArticleAdapter()
+        articleAdapter = ArticlePagedListAdapter()
         articleAdapter.apply {
             recyclerview.adapter = this
             onItemClick = {

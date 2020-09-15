@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import bivano.apps.yournews.R
@@ -25,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(bottom_navigation, navHost.navController)
 
         navHost.navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id) {
-                R.id.detailFragment -> {
+            when (destination.id) {
+                R.id.detailFragment, R.id.listHeadlineFragment -> {
                     showNavigation(false)
                 }
                 else -> {

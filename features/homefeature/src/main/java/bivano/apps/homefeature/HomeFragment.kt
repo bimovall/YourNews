@@ -67,6 +67,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //toolbar.logo = ContextCompat.getDrawable(requireContext(), bivano.apps.common.R.drawable.ic_search)
+        toolbar.setupWithNavController(findNavController())
         collapsing_toolbar.setupWithNavController(toolbar, findNavController())
         initRecyclerView()
         initViewPager()

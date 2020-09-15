@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.common.Result
 import bivano.apps.common.adapter.ArticlePagedListAdapter
@@ -28,7 +29,7 @@ class ListHeadlineFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val args : ListHeadlineFragmentArgs by navArgs()
+    private val args: ListHeadlineFragmentArgs by navArgs()
 
     private val listHeadlineViewModel by viewModels<ListHeadlineViewModel> { viewModelFactory }
 
@@ -52,7 +53,7 @@ class ListHeadlineFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-            return inflater.inflate(R.layout.fragment_list_headline, container, false)
+        return inflater.inflate(R.layout.fragment_list_headline, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,9 +66,7 @@ class ListHeadlineFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+        toolbar.setupWithNavController(findNavController())
     }
 
     private fun initChipFilter() {
@@ -88,7 +87,8 @@ class ListHeadlineFragment : Fragment() {
         adapter = ArticlePagedListAdapter()
         recyclerview.adapter = adapter
         adapter.onItemClick = {
-            val action = ListHeadlineFragmentDirections.actionListHeadlineFragmentToDetailFragment(it.url)
+            val action =
+                ListHeadlineFragmentDirections.actionListHeadlineFragmentToDetailFragment(it.url)
             findNavController().navigate(action)
         }
     }

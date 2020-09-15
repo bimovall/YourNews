@@ -32,7 +32,7 @@ android {
     }
 
     dynamicFeatures = mutableSetOf(":features:homefeature", ":features:articlefeature",
-        ":features:achievedfeature"
+        ":features:achievedfeature", ":features:detailFeature"
     )
 }
 
@@ -44,7 +44,6 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    implementation(project(":core:domain"))
     implementation(Dependencies.kotlinDep)
     /*kapt(daggerHiltProcessorDep)
     kapt(hiltProcessorDep)*/

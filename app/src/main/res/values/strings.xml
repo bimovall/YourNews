@@ -3,4 +3,5 @@
     <string name="title_homefeature">Home Module</string>
     <string name="title_articlefeature">Article Module</string>
     <string name="title_achievedfeature">Achieved Module</string>
+    <string name="title_detailfeature">Detail Feature</string>
 </resources>

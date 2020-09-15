@@ -40,6 +40,7 @@ class HomeFragment : Fragment() {
 
     private val listFeaturedArticle = ArrayList<Article>()
 
+    private var category = "general"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()
@@ -65,30 +66,34 @@ class HomeFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar.logo = ContextCompat.getDrawable(requireContext(), R.drawable.ic_search)
+        //toolbar.logo = ContextCompat.getDrawable(requireContext(), bivano.apps.common.R.drawable.ic_search)
+        toolbar.setupWithNavController(findNavController())
         collapsing_toolbar.setupWithNavController(toolbar, findNavController())
-        homeViewModel.loadData(null)
         initRecyclerView()
         initViewPager()
         initChipFilter()
-        initSearchView()
         observeData()
-    }
 
-    private fun initSearchView() {
-        TODO("Add search feature")
+        label_see_all.setOnClickListener {
+            val action = HomeFragmentDirections.actionActionHomeToListHeadlineFragment(category)
+            findNavController().navigate(action)
+        }
     }
 
     @ExperimentalCoroutinesApi
     private fun initChipFilter() {
         chip_group.setOnCheckedChangeListener { group, checkedId ->
-            homeViewModel.loadData(group.findViewById<Chip>(checkedId).text.toString())
+            category = group.findViewById<Chip>(checkedId).text.toString()
+            homeViewModel.loadData(category)
         }
     }
 
     private fun initViewPager() {
         homeFeaturedAdapter = HomeFeaturedAdapter(listFeaturedArticle)
         view_pager.adapter = homeFeaturedAdapter
+        homeFeaturedAdapter.featuredItemClick = {
+            navigateToDetail(it.url)
+        }
     }
 
     private fun observeData() {
@@ -159,5 +164,14 @@ class HomeFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
         homeAdapter = HomeAdapter(listArticle)
         recyclerview.adapter = homeAdapter
+
+        homeAdapter.itemClick = {
+            navigateToDetail(it.url)
+        }
+    }
+
+    private fun navigateToDetail(url: String) {
+        val action = HomeFragmentDirections.actionActionHomeToDetailFragment(url)
+        findNavController().navigate(action)
     }
 }

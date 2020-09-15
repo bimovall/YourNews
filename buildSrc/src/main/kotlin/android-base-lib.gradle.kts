@@ -1,9 +1,16 @@
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
 }
+
+val apiKeyPropertiesFile: File = rootProject.file("apikey.properties")
+val apiKeyProperties = Properties()
+apiKeyProperties.load(FileInputStream(apiKeyPropertiesFile))
 
 android {
     compileSdkVersion(Versions.targetSdkVersion)
@@ -15,6 +22,7 @@ android {
         versionName = "1.0"
 
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "NewsApiKey", apiKeyProperties.getProperty("NewsApiKey"))
     }
 
     compileOptions {

@@ -1,9 +1,9 @@
 package bivano.apps.yournews.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import bivano.apps.yournews.R
@@ -21,6 +21,20 @@ class MainActivity : AppCompatActivity() {
         val navHost =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         NavigationUI.setupWithNavController(bottom_navigation, navHost.navController)
-        homeViewModel.loadData()
+
+        navHost.navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            when (destination.id) {
+                R.id.detailFragment, R.id.listHeadlineFragment -> {
+                    showNavigation(false)
+                }
+                else -> {
+                    showNavigation(true)
+                }
+            }
+        }
+    }
+
+    private fun showNavigation(isShow: Boolean) {
+        bottom_navigation.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }

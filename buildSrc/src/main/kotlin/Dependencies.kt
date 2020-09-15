@@ -34,6 +34,7 @@ object Dependencies {
     const val constraintLayoutDep = "androidx.constraintlayout:constraintlayout:${Versions.constrainVersion}"
     const val materialGoogleDep = "com.google.android.material:material:${Versions.materialVersion}"
     const val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.fragmentKtxVersion}"
+    const val pagingDep = "androidx.paging:paging-runtime:${Versions.pagingVersion}"
 
     //playcore
     const val playCoreDep = "com.google.android.play:core:${Versions.playCoreVersion}"

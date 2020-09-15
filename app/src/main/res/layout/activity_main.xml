@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_container"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -27,6 +22,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         android:background="@drawable/bg_bottom_navigation_view"
         app:itemIconTint="@drawable/selector_bottom_navigation_item"
         app:labelVisibilityMode="unlabeled"

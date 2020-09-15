@@ -15,6 +15,8 @@ import kotlin.math.min
 class HomeFeaturedAdapter(private val listArticle: List<Article>) :
     RecyclerView.Adapter<HomeFeaturedAdapter.ViewHolder>() {
 
+    var featuredItemClick : ((Article) -> Unit)? = null
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -32,7 +34,7 @@ class HomeFeaturedAdapter(private val listArticle: List<Article>) :
         holder.bindView(listArticle[position])
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bindView(article: Article) {
             itemView.tv_featured_title.text = article.title
 
@@ -42,7 +44,7 @@ class HomeFeaturedAdapter(private val listArticle: List<Article>) :
                 .into(itemView.img_cover)
 
             itemView.setOnClickListener {
-                Toast.makeText(it.context, article.title, Toast.LENGTH_SHORT).show()
+                featuredItemClick?.invoke(article)
             }
         }
 

@@ -20,6 +20,7 @@ object Versions {
     const val hiltLifecycleVersion = "1.0.0-alpha01"
     const val fragmentKtxVersion = "1.2.5"
     const val gsonConverterVersion = "2.9.0"
+    const val pagingVersion = "2.1.2"
 
     const val minSdkVersion = 21
     const val targetSdkVersion = 29

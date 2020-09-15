@@ -1,20 +1,22 @@
 package bivano.apps.yournews.di
 
-import bivano.apps.domain.DataManager
-import bivano.apps.domain.di.DefaultDispatcher
+import bivano.apps.data.repository.article.ArticleRepository
+import bivano.apps.data.repository.headline.HeadlineRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import okhttp3.OkHttpClient
 
 @EntryPoint
 @InstallIn(ApplicationComponent::class)
 interface DynamicModuleDependencies {
 
-    fun dataManager(): DataManager
+    //fun dataManager(): DataManager
 
-    @DefaultDispatcher
-    fun defaultDispatcher(): CoroutineDispatcher
+    fun articleRepository(): ArticleRepository
+
+    fun headlineRepository(): HeadlineRepository
+
+    /*@DefaultDispatcher
+    fun defaultDispatcher(): CoroutineDispatcher*/
 
 }

@@ -26,6 +26,8 @@
                 android:background="@drawable/bg_search_view"
                 android:drawableEnd="@drawable/ic_search"
                 android:focusable="true"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/gray"
                 android:hint="Enter keywords..."
                 android:paddingLeft="16dp"
                 android:paddingTop="8dp"

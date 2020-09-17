@@ -10,7 +10,7 @@ import Dependencies.gsonConverterDep
 import Dependencies.hiltLifecycleDep
 import Dependencies.hiltProcessorDep
 import Dependencies.junitDep
-import Dependencies.lifecycle
+import Dependencies.lifecycleLiveDataDep
 import Dependencies.materialGoogleDep
 import Dependencies.navigationDynamicDep
 import Dependencies.navigationKtxDep
@@ -31,7 +31,8 @@ object Dependencies {
     const val appCompatDep = "androidx.appcompat:appcompat:${Versions.appCompatVersion}"
     const val coreKtxDep = "androidx.core:core-ktx:${Versions.coreKtxVersion}"
     const val kotlinDep = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlinVersion}"
-    const val constraintLayoutDep = "androidx.constraintlayout:constraintlayout:${Versions.constrainVersion}"
+    const val constraintLayoutDep =
+        "androidx.constraintlayout:constraintlayout:${Versions.constrainVersion}"
     const val materialGoogleDep = "com.google.android.material:material:${Versions.materialVersion}"
     const val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.fragmentKtxVersion}"
     const val pagingDep = "androidx.paging:paging-runtime:${Versions.pagingVersion}"
@@ -41,12 +42,16 @@ object Dependencies {
     const val playCoreKtxDep = "com.google.android.play:core-ktx:${Versions.playCoreKtxVersion}"
 
     //navigation architecture
-    const val navigationKtxDep = "androidx.navigation:navigation-fragment-ktx:${Versions.navVersion}"
+    const val navigationKtxDep =
+        "androidx.navigation:navigation-fragment-ktx:${Versions.navVersion}"
     const val navigationUiKtx = "androidx.navigation:navigation-ui-ktx:${Versions.navVersion}"
-    const val navigationDynamicDep = "androidx.navigation:navigation-dynamic-features-fragment:${Versions.navVersion}"
+    const val navigationDynamicDep =
+        "androidx.navigation:navigation-dynamic-features-fragment:${Versions.navVersion}"
 
     // Lifecycle components
     const val lifecycle = "androidx.lifecycle:lifecycle-extensions:${Versions.archLifecycleVersion}"
+    const val lifecycleLiveDataDep =
+        "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.archLifecycleVersion}"
     //const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.archLifecycleVersion}"
 
     // Room components
@@ -61,23 +66,30 @@ object Dependencies {
 
     //network
     const val retrofitDep = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
-    const val okhttpLoggingDep = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpLoggingVersion}"
-    const val gsonConverterDep = "com.squareup.retrofit2:converter-gson:${Versions.gsonConverterVersion}"
+    const val okhttpLoggingDep =
+        "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpLoggingVersion}"
+    const val gsonConverterDep =
+        "com.squareup.retrofit2:converter-gson:${Versions.gsonConverterVersion}"
+    const val gsonDep = "com.google.code.gson:gson:${Versions.gsonVersion}"
 
     // Coroutines
-    const val coroutineApi = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
+    const val coroutineApi =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
     const val coroutineCoreApi =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutinesVersion}"
 
     // Dagger Hilt
     const val daggerHiltDep = "com.google.dagger:hilt-android:${Versions.daggerHiltVersion}"
-    const val daggerHiltProcessorDep = "com.google.dagger:hilt-android-compiler:${Versions.daggerHiltVersion}"
-    const val hiltLifecycleDep = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hiltLifecycleVersion}"
+    const val daggerHiltProcessorDep =
+        "com.google.dagger:hilt-android-compiler:${Versions.daggerHiltVersion}"
+    const val hiltLifecycleDep =
+        "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hiltLifecycleVersion}"
     const val hiltProcessorDep = "androidx.hilt:hilt-compiler:${Versions.hiltLifecycleVersion}"
 
     //integration test
     const val runnerDep = "androidx.test:runner:${Versions.runnerVersion}"
     const val espressoDep = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
+
     //unit test
     const val junitDep = "junit:junit:${Versions.junitVersion}"
 
@@ -88,6 +100,7 @@ fun DependencyHandler.network() {
     implementation(retrofitDep)
     implementation(okhttpLoggingDep)
     implementation(gsonConverterDep)
+    //implementation(gsonDep)
 }
 
 fun DependencyHandler.playCore() {
@@ -137,7 +150,7 @@ fun DependencyHandler.sharedAppCompat() {
 }
 
 fun DependencyHandler.lifecycleComponent() {
-    implementation(lifecycle)
+    implementation(lifecycleLiveDataDep)
 }
 
 fun DependencyHandler.navigationArch() {

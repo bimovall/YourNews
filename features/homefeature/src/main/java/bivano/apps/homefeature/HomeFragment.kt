@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import bivano.apps.common.Result
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.common.model.Article
 import bivano.apps.homefeature.di.DaggerHomeComponent
@@ -97,19 +99,53 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeData() {
-        homeViewModel.articleData.observe(viewLifecycleOwner, Observer {
-            listArticle.clear()
-            listArticle.addAll(it)
-            homeAdapter.notifyDataSetChanged()
-        })
+        homeViewModel.stateNetworkData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Result.Success -> {
+                    setData(it.data)
+                    showLoading(false)
+                }
 
-        homeViewModel.featuredData.observe(viewLifecycleOwner, Observer {
-            view_pager.setCurrentItem(0, false)
-            listFeaturedArticle.clear()
-            listFeaturedArticle.addAll(it)
-            homeFeaturedAdapter.notifyDataSetChanged()
-            showDotsIndicator()
+                is Result.ResponseError -> {
+                    showLoading(false)
+                    showMessage(it.failure.message!!)
+                }
+                is Result.GeneralError -> {
+                    showLoading(false)
+                    showMessage("There's something wrong")
+                }
+                is Result.Loading -> {
+                    showLoading(true)
+                }
+            }
         })
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoading(isShow: Boolean) {
+        if (isShow) {
+            container_loading.visibility = View.VISIBLE
+        } else {
+            container_loading.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun setData(data: List<Article>) {
+        listArticle.clear()
+        listFeaturedArticle.clear()
+        if (data.size > 4) {
+            listFeaturedArticle.addAll(data.subList(0, 5))
+            listArticle.addAll(data.subList(5, data.size))
+        } else {
+            listFeaturedArticle.addAll(data)
+            listArticle.addAll(listOf())
+        }
+        homeAdapter.notifyDataSetChanged()
+        homeFeaturedAdapter.notifyDataSetChanged()
+        showDotsIndicator()
     }
 
     private fun showDotsIndicator() {
@@ -143,6 +179,8 @@ class HomeFragment : Fragment() {
         imgDots = Array(listFeaturedArticle.size) {
             ImageView(context)
         }
+
+        if (imgDots.isEmpty()) return
 
         imgDots.forEach { img ->
             img.setImageDrawable(setStateDotDrawable(false))

@@ -1,5 +1,7 @@
 package bivano.apps.data.di
 
+import bivano.apps.data.local.LocalDataSource
+import bivano.apps.data.local.LocalDataSourceImpl
 import bivano.apps.data.repository.article.ArticleRepository
 import bivano.apps.data.repository.article.ArticleRepositoryImpl
 import bivano.apps.data.repository.headline.HeadlineRepository
@@ -17,6 +19,10 @@ abstract class RepositoryModule {
     /*@Singleton
     @Binds
     abstract fun bindsDataManager(dataManager: DataManagerImpl): DataManager*/
+
+    @Singleton
+    @Binds
+    abstract fun bindsLocalDataSource(localDataSourceImpl: LocalDataSourceImpl): LocalDataSource
 
     @Singleton
     @Binds

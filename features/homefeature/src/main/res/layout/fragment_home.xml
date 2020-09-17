@@ -173,6 +173,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/white"
                 android:elevation="4dp"
+                app:titleTextColor="@android:color/black"
                 android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/actionBarTheme"
                 app:layout_collapseMode="pin"

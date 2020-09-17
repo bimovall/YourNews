@@ -51,6 +51,7 @@ dependencies {
     playCore()
     integrationTest()
     unitTest()
+    room()
     //design()
     //navigationArch()
     //appCompat()

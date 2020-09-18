@@ -48,11 +48,4 @@ class NetModule {
             .create(NewsService::class.java)
     }
 
-    @Singleton
-    @Provides
-    fun provideRemoteDataSource(newsService: NewsService): RemoteDataSource {
-        return RemoteDataSource(newsService)
-    }
-
-
 }

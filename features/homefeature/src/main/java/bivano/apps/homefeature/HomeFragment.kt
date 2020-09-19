@@ -1,5 +1,7 @@
 package bivano.apps.homefeature
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -69,8 +72,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //toolbar.logo = ContextCompat.getDrawable(requireContext(), bivano.apps.common.R.drawable.ic_search)
-        toolbar.setupWithNavController(findNavController())
-        collapsing_toolbar.setupWithNavController(toolbar, findNavController())
+        setupToolbar()
         initRecyclerView()
         initViewPager()
         initChipFilter()
@@ -80,6 +82,17 @@ class HomeFragment : Fragment() {
             val action = HomeFragmentDirections.actionActionHomeToListHeadlineFragment(category)
             findNavController().navigate(action)
         }
+    }
+
+    private fun setupToolbar() {
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                bivano.apps.yournews.R.id.action_home, bivano.apps.yournews.R.id.action_achieved,
+                bivano.apps.yournews.R.id.action_article
+            )
+        )
+        toolbar.setupWithNavController(findNavController())
+        collapsing_toolbar.setupWithNavController(toolbar, findNavController(), appBarConfiguration)
     }
 
     @ExperimentalCoroutinesApi
@@ -95,6 +108,9 @@ class HomeFragment : Fragment() {
         view_pager.adapter = homeFeaturedAdapter
         homeFeaturedAdapter.featuredItemClick = {
             navigateToDetail(it.url)
+        }
+        homeFeaturedAdapter.featuredItemLongClick = {
+            showDialog(it)
         }
     }
 
@@ -206,6 +222,25 @@ class HomeFragment : Fragment() {
         homeAdapter.itemClick = {
             navigateToDetail(it.url)
         }
+
+        homeAdapter.itemLongClick = {
+            showDialog(it)
+        }
+    }
+
+    private fun showDialog(article: Article) {
+        AlertDialog.Builder(context)
+            .setTitle("Confirmation")
+            .setMessage("Do you want to save this news?")
+            .setPositiveButton("Yes") { dialogInterface, i ->
+                homeViewModel.saveNews(article)
+                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT).show()
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton("No") { dialogInterface, i ->
+                dialogInterface.dismiss()
+            }
+            .show()
     }
 
     private fun navigateToDetail(url: String) {

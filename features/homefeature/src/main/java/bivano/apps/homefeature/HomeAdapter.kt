@@ -19,6 +19,8 @@ class HomeAdapter(private val listArticle: List<Article>) :
 
     var itemClick: ((Article)-> Unit)? = null
 
+    var itemLongClick: ((Article)-> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(bivano.apps.common.R.layout.view_news_item, parent, false)
@@ -47,6 +49,11 @@ class HomeAdapter(private val listArticle: List<Article>) :
 
             itemView.setOnClickListener {
                 itemClick?.invoke(item)
+            }
+
+            itemView.setOnLongClickListener {
+                itemLongClick?.invoke(item)
+                true
             }
         }
 

@@ -36,6 +36,7 @@ object Dependencies {
     const val materialGoogleDep = "com.google.android.material:material:${Versions.materialVersion}"
     const val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.fragmentKtxVersion}"
     const val pagingDep = "androidx.paging:paging-runtime:${Versions.pagingVersion}"
+    const val transitionDep = "androidx.transition:transition-ktx:${Versions.transitionVersion}"
 
     //playcore
     const val playCoreDep = "com.google.android.play:core:${Versions.playCoreVersion}"

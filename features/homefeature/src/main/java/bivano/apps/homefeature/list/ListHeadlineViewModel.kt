@@ -4,12 +4,15 @@ import androidx.lifecycle.*
 import androidx.paging.PagedList
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
+import bivano.apps.data.repository.achieved.AchievedRepository
 import bivano.apps.data.repository.headline.HeadlineRepository
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ListHeadlineViewModel
 @Inject constructor(
-    private val headlineRepository: HeadlineRepository
+    private val headlineRepository: HeadlineRepository,
+    private val achievedRepository: AchievedRepository
 ): ViewModel() {
 
     private val categoryData = MutableLiveData<String>()
@@ -25,15 +28,6 @@ class ListHeadlineViewModel
         headlineRepository.getInitialNetworkResult()
     }
 
-
-    init {
-        //headlinePagedData = headlineRepository.initializeHeadlinePagedData(viewModelScope, "general")
-        /*initialNetworkStateData = headlineRepository.getInitialNetworkResult()
-        networkStateData = headlineRepository.getNetworkResult()*/
-
-    }
-
-
     fun initLoad(category: String?) {
         if (categoryData.value != category){
             categoryData.value = category
@@ -43,5 +37,11 @@ class ListHeadlineViewModel
     fun load(category: String?) {
         headlineRepository.load(category)
         headlinePagedData.value?.dataSource?.invalidate()
+    }
+
+    fun saveNews(article: Article) {
+        viewModelScope.launch {
+            achievedRepository.saveNews(article)
+        }
     }
 }

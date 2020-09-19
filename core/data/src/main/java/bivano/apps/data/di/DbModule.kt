@@ -24,4 +24,8 @@ object DbModule {
     @Provides
     @Singleton
     fun provideHeadlineDao(newsDatabase: NewsDatabase) = newsDatabase.headlineDao()
+
+    @Provides
+    @Singleton
+    fun provideAchievedDao(newsDatabase: NewsDatabase) = newsDatabase.achievedDao()
 }

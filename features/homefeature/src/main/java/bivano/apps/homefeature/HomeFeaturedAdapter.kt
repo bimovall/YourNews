@@ -17,6 +17,8 @@ class HomeFeaturedAdapter(private val listArticle: List<Article>) :
 
     var featuredItemClick : ((Article) -> Unit)? = null
 
+    var featuredItemLongClick : ((Article) -> Unit)? = null
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -45,6 +47,11 @@ class HomeFeaturedAdapter(private val listArticle: List<Article>) :
 
             itemView.setOnClickListener {
                 featuredItemClick?.invoke(article)
+            }
+
+            itemView.setOnLongClickListener {
+                featuredItemLongClick?.invoke(article)
+                true
             }
         }
 

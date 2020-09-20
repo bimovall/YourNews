@@ -30,7 +30,7 @@ class AchievedFragment : Fragment() {
 
     private lateinit var adapter: ArticlePagedListAdapter
 
-    private val achievedViewModel by viewModels<AchievedViewModel> {viewModelFactory}
+    private val achievedViewModel by viewModels<AchievedViewModel> { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()

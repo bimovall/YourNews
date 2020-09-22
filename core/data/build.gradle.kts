@@ -9,4 +9,5 @@ dependencies {
     daggerHilt()
     integrationTest()
     network()
+    unitTest()
 }

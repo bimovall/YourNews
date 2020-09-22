@@ -1,5 +1,6 @@
 package bivano.apps.homefeature.list
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.common.Result
 import bivano.apps.common.adapter.ArticlePagedListAdapter
 import bivano.apps.common.factory.ViewModelFactory
+import bivano.apps.common.model.Article
 import bivano.apps.homefeature.R
 import bivano.apps.homefeature.di.DaggerHomeComponent
 import bivano.apps.yournews.di.DynamicModuleDependencies
@@ -91,6 +93,25 @@ class ListHeadlineFragment : Fragment() {
                 ListHeadlineFragmentDirections.actionListHeadlineFragmentToDetailFragment(it.url)
             findNavController().navigate(action)
         }
+
+        adapter.onItemLongClick = {
+            showDialog(it)
+        }
+    }
+
+    private fun showDialog(article: Article) {
+        AlertDialog.Builder(context)
+            .setTitle("Confirmation")
+            .setMessage("Do you want to save this news?")
+            .setPositiveButton("Yes") { dialogInterface, i ->
+                listHeadlineViewModel.saveNews(article)
+                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT).show()
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton("No") { dialogInterface, i ->
+                dialogInterface.dismiss()
+            }
+            .show()
     }
 
     private fun observeData() {

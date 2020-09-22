@@ -17,6 +17,8 @@ class ArticlePagedListAdapter : PagedListAdapter<Article, RecyclerView.ViewHolde
 
     var onItemClick: ((Article) -> Unit)? = null
 
+    var onItemLongClick: ((Article) -> Unit)? = null
+
     private var networkState : bivano.apps.common.Result<List<Article>>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -83,6 +85,11 @@ class ArticlePagedListAdapter : PagedListAdapter<Article, RecyclerView.ViewHolde
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(item!!)
+            }
+
+            itemView.setOnLongClickListener {
+                onItemLongClick?.invoke(item!!)
+                true
             }
         }
 

@@ -13,10 +13,10 @@ interface HeadlineDao {
     suspend fun getHeadlines(): List<HeadlineEntity>
 
     @Query("DELETE FROM headline_cache")
-    fun deleteHeadline()
+    suspend fun deleteHeadline()
 
     @Transaction
-    fun insertHeadline(data: List<HeadlineEntity>) {
+    suspend fun insertHeadline(data: List<HeadlineEntity>) {
         deleteHeadline()
         insertData(data)
     }

@@ -61,5 +61,18 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_out" />
     </fragment>
+    <fragment
+        android:id="@+id/action_achieved"
+        android:name="bivano.apps.achievedfeature.AchievedFragment"
+        app:moduleName="achievedfeature"
+        android:label="AchievedFragment" >
+        <action
+            android:id="@+id/action_action_achieved_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"/>
+    </fragment>
 
 </navigation>

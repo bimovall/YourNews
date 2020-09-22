@@ -1,5 +1,6 @@
 package bivano.apps.articlefeature
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.articlefeature.di.DaggerArticleComponent
 import bivano.apps.common.Result
 import bivano.apps.common.adapter.ArticlePagedListAdapter
 import bivano.apps.common.extension.debouncingText
 import bivano.apps.common.factory.ViewModelFactory
+import bivano.apps.common.model.Article
 import bivano.apps.yournews.di.DynamicModuleDependencies
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_article.*
@@ -63,10 +67,21 @@ class ArticleFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
         initSearchView()
         initRecyclerView()
         initChipFilter()
         observeData()
+    }
+
+    private fun setupToolbar() {
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                bivano.apps.yournews.R.id.action_home, bivano.apps.yournews.R.id.action_achieved,
+                bivano.apps.yournews.R.id.action_article
+            )
+        )
+        toolbar.setupWithNavController(findNavController(), appBarConfiguration)
     }
 
     private fun initChipFilter() {
@@ -97,7 +112,26 @@ class ArticleFragment : Fragment() {
                 val action = ArticleFragmentDirections.actionActionArticleToDetailFragment(it.url)
                 findNavController().navigate(action)
             }
+
+            onItemLongClick = {
+                showDialog(it)
+            }
         }
+    }
+
+    private fun showDialog(article: Article) {
+        AlertDialog.Builder(context)
+            .setTitle("Confirmation")
+            .setMessage("Do you want to save this news?")
+            .setPositiveButton("Yes") { dialogInterface, i ->
+                articleViewModel.saveNews(article)
+                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT).show()
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton("No") { dialogInterface, i ->
+                dialogInterface.dismiss()
+            }
+            .show()
     }
 
     private fun observeData() {

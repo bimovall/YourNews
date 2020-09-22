@@ -12,6 +12,7 @@ import Dependencies.hiltProcessorDep
 import Dependencies.junitDep
 import Dependencies.lifecycleLiveDataDep
 import Dependencies.materialGoogleDep
+import Dependencies.mockitoDep
 import Dependencies.navigationDynamicDep
 import Dependencies.navigationKtxDep
 import Dependencies.navigationUiKtx
@@ -36,6 +37,7 @@ object Dependencies {
     const val materialGoogleDep = "com.google.android.material:material:${Versions.materialVersion}"
     const val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.fragmentKtxVersion}"
     const val pagingDep = "androidx.paging:paging-runtime:${Versions.pagingVersion}"
+    const val transitionDep = "androidx.transition:transition-ktx:${Versions.transitionVersion}"
 
     //playcore
     const val playCoreDep = "com.google.android.play:core:${Versions.playCoreVersion}"
@@ -92,6 +94,7 @@ object Dependencies {
 
     //unit test
     const val junitDep = "junit:junit:${Versions.junitVersion}"
+    const val mockitoDep = "org.mockito:mockito-core:${Versions.mockitoVersion}"
 
 
 }
@@ -184,6 +187,7 @@ fun DependencyHandler.integrationTest() {
 
 fun DependencyHandler.unitTest() {
     testImplementation(junitDep)
+    testImplementation(mockitoDep)
 }
 
 private fun DependencyHandler.implementation(depName: String) {

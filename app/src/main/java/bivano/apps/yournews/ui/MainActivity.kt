@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initCheckFeature()
         val navHost =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         NavigationUI.setupWithNavController(bottom_navigation, navHost.navController)
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun initCheckFeature() {
+
     }
 
     private fun showNavigation(isShow: Boolean) {

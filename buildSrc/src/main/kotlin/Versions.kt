@@ -23,6 +23,7 @@ object Versions {
     const val gsonVersion = "2.8.6"
     const val pagingVersion = "2.1.2"
     const val transitionVersion = "1.4.0-beta01"
+    const val mockitoVersion = "3.0.0"
 
     const val minSdkVersion = 21
     const val targetSdkVersion = 29

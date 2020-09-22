@@ -12,6 +12,7 @@ import Dependencies.hiltProcessorDep
 import Dependencies.junitDep
 import Dependencies.lifecycleLiveDataDep
 import Dependencies.materialGoogleDep
+import Dependencies.mockitoDep
 import Dependencies.navigationDynamicDep
 import Dependencies.navigationKtxDep
 import Dependencies.navigationUiKtx
@@ -93,6 +94,7 @@ object Dependencies {
 
     //unit test
     const val junitDep = "junit:junit:${Versions.junitVersion}"
+    const val mockitoDep = "org.mockito:mockito-core:${Versions.mockitoVersion}"
 
 
 }
@@ -185,6 +187,7 @@ fun DependencyHandler.integrationTest() {
 
 fun DependencyHandler.unitTest() {
     testImplementation(junitDep)
+    testImplementation(mockitoDep)
 }
 
 private fun DependencyHandler.implementation(depName: String) {

@@ -23,6 +23,7 @@ android {
 
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "NewsApiKey", apiKeyProperties.getProperty("NewsApiKey"))
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {

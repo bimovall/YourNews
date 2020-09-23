@@ -1,14 +1,15 @@
 package bivano.apps.data.remote
 
-import bivano.apps.common.Failure
-import bivano.apps.common.Result
-import bivano.apps.data.getSuccessResultData
+import bivano.apps.data.getErrorRequestData
+import bivano.apps.data.getErrorResponseData
+import bivano.apps.data.getSuccessResponseData
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -17,7 +18,7 @@ import org.mockito.MockitoAnnotations
 class RemoteDataTest {
 
     @Mock
-    lateinit var remoteDataSource: RemoteDataSource
+    lateinit var newsService: NewsService
 
     @Before
     fun setup() {
@@ -26,67 +27,64 @@ class RemoteDataTest {
 
     @Test
     fun showSuccessResultLoadArticle() = runBlocking {
-        Mockito.`when`(remoteDataSource.loadArticles("", "", 1))
-            .thenReturn(getSuccessResultData())
-        val result = remoteDataSource.loadArticles("", "", 1)
-        Mockito.verify(remoteDataSource).loadArticles("", "", 1)
-        assert(result is Result.Success)
-        val size = (result as Result.Success).data.size
-        Assert.assertEquals(2, size)
+        Mockito.`when`(newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getSuccessResponseData())
+        val result = newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        assert(result.isSuccessful)
+        assert(result.body() != null)
+        assert(result.body()?.code == null)
     }
 
     @Test
     fun showResponseErrorLoadArticle() = runBlocking {
-        val failure = Failure("", "Response Error", "400")
-        Mockito.`when`(remoteDataSource.loadArticles("", "", 1))
-            .thenReturn(Result.ResponseError(failure))
-        val result = remoteDataSource.loadArticles("", "", 1)
-        Mockito.verify(remoteDataSource).loadArticles("", "", 1)
-        assert(result is Result.ResponseError)
-
+        Mockito.`when`(newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getErrorResponseData())
+        val result = newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        assert(result.isSuccessful)
+        assert(result.body()?.status.equals("error"))
     }
 
     @Test
     fun showGeneralErrorLoadArticle() = runBlocking {
-        val exception = Exception()
-        Mockito.`when`(remoteDataSource.loadArticles("", "", 1))
-            .thenReturn(Result.GeneralError(exception))
-        val result = remoteDataSource.loadArticles("", "", 1)
-        Mockito.verify(remoteDataSource).loadArticles("", "", 1)
-        assert(result is Result.GeneralError)
-
+        Mockito.`when`(newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getErrorRequestData())
+        val result = newsService.getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getArticle(anyString(), anyString(), anyString(), anyInt(), anyInt())
+        assert(!result.isSuccessful)
+        assert(result.errorBody() != null)
     }
 
     @Test
     fun showSuccessResultLoadHeadline() = runBlocking {
-        Mockito.`when`(remoteDataSource.loadHeadline("", 1))
-            .thenReturn(getSuccessResultData())
-
-        val result = remoteDataSource.loadHeadline("", 1)
-        Mockito.verify(remoteDataSource).loadHeadline("", 1)
-        assert(result is Result.Success)
-        val size = (result as Result.Success).data.size
-        Assert.assertEquals(2, size)
+        Mockito.`when`(newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getSuccessResponseData())
+        val result = newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        assert(result.isSuccessful)
+        assert(result.body() != null)
+        assert(result.body()?.code == null)
     }
 
     @Test
     fun showResponseErrorLoadHeadline() = runBlocking {
-        val failure = Failure("", "Response Error", "400")
-        Mockito.`when`(remoteDataSource.loadHeadline("",  1))
-            .thenReturn(Result.ResponseError(failure))
-        val result = remoteDataSource.loadHeadline("",  1)
-        Mockito.verify(remoteDataSource).loadHeadline("",  1)
-        assert(result is Result.ResponseError)
+        Mockito.`when`(newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getErrorResponseData())
+        val result = newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        assert(result.isSuccessful)
+        assert(result.body()?.status.equals("error"))
     }
 
     @Test
     fun showGeneralErrorLoadHeadline() = runBlocking {
-        val exception = Exception()
-        Mockito.`when`(remoteDataSource.loadHeadline("",  1))
-            .thenReturn(Result.GeneralError(exception))
-        val result = remoteDataSource.loadHeadline("",  1)
-        Mockito.verify(remoteDataSource).loadHeadline("",  1)
-        assert(result is Result.GeneralError)
+        Mockito.`when`(newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt()))
+            .thenReturn(getErrorRequestData())
+        val result = newsService.getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        Mockito.verify(newsService).getHeadlines(anyString(), anyString(), anyInt(), anyInt())
+        assert(!result.isSuccessful)
+        assert(result.errorBody() != null)
     }
 
 }

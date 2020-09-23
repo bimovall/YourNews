@@ -10,6 +10,7 @@ import Dependencies.gsonConverterDep
 import Dependencies.hiltLifecycleDep
 import Dependencies.hiltProcessorDep
 import Dependencies.junitDep
+import Dependencies.junitExtDep
 import Dependencies.lifecycleLiveDataDep
 import Dependencies.materialGoogleDep
 import Dependencies.mockitoDep
@@ -25,6 +26,7 @@ import Dependencies.roomDep
 import Dependencies.roomKtxDep
 import Dependencies.roomTestDep
 import Dependencies.runnerDep
+import Dependencies.testCoreDep
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
 object Dependencies {
@@ -91,6 +93,8 @@ object Dependencies {
     //integration test
     const val runnerDep = "androidx.test:runner:${Versions.runnerVersion}"
     const val espressoDep = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
+    const val testCoreDep = "androidx.test:core:${Versions.testCoreVersion}"
+    const val junitExtDep = "androidx.test.ext:junit:${Versions.junitExtVersion}"
 
     //unit test
     const val junitDep = "junit:junit:${Versions.junitVersion}"
@@ -183,6 +187,8 @@ fun DependencyHandler.room() {
 fun DependencyHandler.integrationTest() {
     androidTestImplementation(runnerDep)
     androidTestImplementation(espressoDep)
+    androidTestImplementation(testCoreDep)
+    androidTestImplementation(junitExtDep)
 }
 
 fun DependencyHandler.unitTest() {

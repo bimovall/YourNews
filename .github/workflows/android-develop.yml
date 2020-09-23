@@ -17,7 +17,7 @@ jobs:
         run: cp apikey.properties.ci apikey.properties
       - name: Build with Gradle
         run: ./gradlew build
-  Unit Test:
+  unit_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
       - name: Run Unit Test
         run: ./gradlew test --stacktrace
 
-  Instrumented Test:
+  instrumented_test:
     runs-on: macos-latest
     steps:
       - name: actions/checkout@v2

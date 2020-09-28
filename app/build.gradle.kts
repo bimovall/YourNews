@@ -1,6 +1,3 @@
-import Dependencies.daggerHiltProcessorDep
-import Dependencies.hiltProcessorDep
-
 plugins {
     `android-base`
 }
@@ -19,7 +16,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -31,7 +31,8 @@ android {
         options.jvmTarget = "1.8"
     }
 
-    dynamicFeatures = mutableSetOf(":features:homefeature", ":features:articlefeature",
+    dynamicFeatures = mutableSetOf(
+        ":features:homefeature", ":features:articlefeature",
         ":features:achievedfeature", ":features:detailFeature"
     )
 }
@@ -45,16 +46,48 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(Dependencies.kotlinDep)
-    /*kapt(daggerHiltProcessorDep)
-    kapt(hiltProcessorDep)*/
     network()
     playCore()
     integrationTest()
     unitTest()
     room()
-    //design()
-    //navigationArch()
-    //appCompat()
     daggerHilt()
     hiltLifecycle()
 }
+
+//https://github.com/android/app-bundle-samples/blob/master/DynamicFeatures/app/src/main/java/com/google/android/samples/dynamicfeatures/MainActivity.kt
+val bundletoolJar = project.rootDir.resolve("library/bundletool/bundletool-all-1.2.0.jar")
+android.applicationVariants.all(object : Action<com.android.build.gradle.api.ApplicationVariant> {
+    override fun execute(variant: com.android.build.gradle.api.ApplicationVariant) {
+        variant.outputs.forEach { output: com.android.build.gradle.api.BaseVariantOutput? ->
+            (output as? com.android.build.gradle.api.ApkVariantOutput)?.let { apkOutput: com.android.build.gradle.api.ApkVariantOutput ->
+                var filePath = apkOutput.outputFile.absolutePath
+                filePath = filePath.replaceAfterLast(".", "aab")
+                filePath = filePath.replace("build/outputs/apk/", "build/outputs/bundle/")
+                var outputPath = filePath.replace("build/outputs/bundle/", "build/outputs/apks/")
+                outputPath = outputPath.replaceAfterLast(".", "apks")
+
+                tasks.register<JavaExec>("buildApks${variant.name.capitalize()}") {
+                    classpath = files(bundletoolJar)
+                    args = listOf(
+                        "build-apks",
+                        "--overwrite",
+                        "--local-testing",
+                        "--bundle",
+                        filePath,
+                        "--output",
+                        outputPath
+                    )
+                    dependsOn("bundle${variant.name.capitalize()}")
+                }
+
+                tasks.register<JavaExec>("installApkSplitsForTest${variant.name.capitalize()}") {
+                    classpath = files(bundletoolJar)
+                    args = listOf("install-apks", "--apks", outputPath)
+                    dependsOn("buildApks${variant.name.capitalize()}")
+                }
+            }
+        }
+    }
+})
+

@@ -1,6 +1,7 @@
 package bivano.apps.achievedfeature
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import bivano.apps.common.adapter.ArticlePagedListAdapter
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.common.model.Article
 import bivano.apps.yournews.di.DynamicModuleDependencies
+import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_achieved.*
 import javax.inject.Inject
@@ -43,6 +45,11 @@ class AchievedFragment : Fragment() {
             DynamicModuleDependencies::class.java
         )
         DaggerAchievedComponent.factory().create(module).inject(this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        SplitCompat.install(context)
     }
 
     override fun onCreateView(

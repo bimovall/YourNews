@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HeadlineRepository {
 
-    suspend fun loadHeadline(category: String?): Flow<Result<List<Article>>>
+    fun loadHeadline(category: String?): Flow<Result<List<Article>>>
 
     fun initializeHeadlinePagedData(
         coroutineScope: CoroutineScope,

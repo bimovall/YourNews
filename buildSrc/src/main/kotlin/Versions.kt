@@ -26,6 +26,7 @@ object Versions {
     const val mockitoVersion = "3.0.0"
     const val testCoreVersion = "1.2.0"
     const val junitExtVersion = "1.1.1"
+    const val archCoreVersion = "2.1.0"
 
 
     const val minSdkVersion = 21

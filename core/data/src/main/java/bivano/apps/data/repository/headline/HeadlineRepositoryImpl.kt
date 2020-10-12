@@ -23,7 +23,7 @@ class HeadlineRepositoryImpl
 
     private lateinit var dataSourceFactory: HeadlinePagedDataFactory
 
-    override suspend fun loadHeadline(category: String?): Flow<Result<List<Article>>> = flow {
+    override fun loadHeadline(category: String?): Flow<Result<List<Article>>> = flow {
         emit(Result.Loading)
         val local = localDataSource.loadHeadline()
 

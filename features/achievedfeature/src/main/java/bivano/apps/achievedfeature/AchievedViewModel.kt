@@ -1,7 +1,9 @@
 package bivano.apps.achievedfeature
 
-import androidx.lifecycle.*
-import androidx.paging.PagedList
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import bivano.apps.common.model.Article
 import bivano.apps.data.repository.achieved.AchievedRepository
 import kotlinx.coroutines.launch
@@ -12,8 +14,8 @@ class AchievedViewModel
 
     private val keywordData: MutableLiveData<String?> = MutableLiveData()
 
-    val resultData: LiveData<PagedList<Article>> = Transformations.switchMap(keywordData) {
-        achievedRepository.loadAchieved(it)
+    val achievedPagingData = Transformations.switchMap(keywordData) {
+        achievedRepository.loadPagingAchieved(it)
     }
 
     init {

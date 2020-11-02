@@ -1,8 +1,10 @@
 package bivano.apps.homefeature.list
 
-import androidx.lifecycle.*
-import androidx.paging.PagedList
-import bivano.apps.common.Result
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import bivano.apps.common.model.Article
 import bivano.apps.data.repository.achieved.AchievedRepository
 import bivano.apps.data.repository.headline.HeadlineRepository
@@ -13,30 +15,19 @@ class ListHeadlineViewModel
 @Inject constructor(
     private val headlineRepository: HeadlineRepository,
     private val achievedRepository: AchievedRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val categoryData = MutableLiveData<String>()
 
-    val headlinePagedData: LiveData<PagedList<Article>> = Transformations.switchMap(categoryData) {
-        headlineRepository.initializeHeadlinePagedData(viewModelScope, it)
-    }
-
-    val networkStateData: LiveData<Result<List<Article>>> = Transformations.switchMap(headlinePagedData) {
-        headlineRepository.getNetworkResult()}
-
-    val initialNetworkStateData: LiveData<Result<List<Article>>> = Transformations.switchMap(headlinePagedData) {
-        headlineRepository.getInitialNetworkResult()
+    val headlinePaging = Transformations.switchMap(categoryData) {
+        headlineRepository.initListHeadlinePagingData(it)
+            .cachedIn(viewModelScope)
     }
 
     fun initLoad(category: String?) {
-        if (categoryData.value != category){
+        if (categoryData.value != category) {
             categoryData.value = category
         }
-    }
-
-    fun load(category: String?) {
-        headlineRepository.load(category)
-        headlinePagedData.value?.dataSource?.invalidate()
     }
 
     fun saveNews(article: Article) {

@@ -1,6 +1,8 @@
 import Dependencies.appCompatDep
+import Dependencies.archCoreDep
 import Dependencies.constraintLayoutDep
 import Dependencies.coreKtxDep
+import Dependencies.coroutineTestDep
 import Dependencies.daggerHiltDep
 import Dependencies.daggerHiltProcessorDep
 import Dependencies.espressoDep
@@ -81,6 +83,8 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
     const val coroutineCoreApi =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutinesVersion}"
+    const val coroutineTestDep =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesVersion}"
 
     // Dagger Hilt
     const val daggerHiltDep = "com.google.dagger:hilt-android:${Versions.daggerHiltVersion}"
@@ -99,6 +103,7 @@ object Dependencies {
     //unit test
     const val junitDep = "junit:junit:${Versions.junitVersion}"
     const val mockitoDep = "org.mockito:mockito-core:${Versions.mockitoVersion}"
+    const val archCoreDep = "androidx.arch.core:core-testing:${Versions.archCoreVersion}"
 
 
 }
@@ -194,6 +199,8 @@ fun DependencyHandler.integrationTest() {
 fun DependencyHandler.unitTest() {
     testImplementation(junitDep)
     testImplementation(mockitoDep)
+    testImplementation(archCoreDep)
+    testImplementation(coroutineTestDep)
 }
 
 private fun DependencyHandler.implementation(depName: String) {

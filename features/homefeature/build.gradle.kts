@@ -10,4 +10,5 @@ dependencies {
     kapt(hiltProcessorDep)
     kapt(daggerHiltProcessorDep)
     kapt(glideProcessorDep)
+    unitTest()
 }

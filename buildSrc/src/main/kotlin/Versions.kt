@@ -6,7 +6,7 @@ object Versions {
     const val espressoVersion = "3.1.1"
     const val kotlinVersion = "1.3.72"
     const val retrofitVersion = "2.9.0"
-    const val roomVersion = "2.2.4"
+    const val roomVersion = "2.3.0-alpha03"
     const val okhttpLoggingVersion = "4.8.0"
     const val coroutinesVersion = "1.3.8"
     const val glideVersion = "4.11.0"
@@ -21,11 +21,12 @@ object Versions {
     const val fragmentKtxVersion = "1.2.5"
     const val gsonConverterVersion = "2.9.0"
     const val gsonVersion = "2.8.6"
-    const val pagingVersion = "2.1.2"
+    const val pagingVersion = "3.0.0-alpha07"
     const val transitionVersion = "1.4.0-beta01"
     const val mockitoVersion = "3.0.0"
     const val testCoreVersion = "1.2.0"
     const val junitExtVersion = "1.1.1"
+    const val archCoreVersion = "2.1.0"
 
 
     const val minSdkVersion = 21

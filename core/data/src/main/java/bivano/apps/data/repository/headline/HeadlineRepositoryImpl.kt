@@ -2,8 +2,7 @@ package bivano.apps.data.repository.headline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.*
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
 import bivano.apps.data.local.LocalDataSource
@@ -21,9 +20,7 @@ class HeadlineRepositoryImpl
     private val localDataSource: LocalDataSource
 ) : HeadlineRepository {
 
-    private lateinit var dataSourceFactory: HeadlinePagedDataFactory
-
-    override suspend fun loadHeadline(category: String?): Flow<Result<List<Article>>> = flow {
+    override fun loadHeadline(category: String?): Flow<Result<List<Article>>> = flow {
         emit(Result.Loading)
         val local = localDataSource.loadHeadline()
 
@@ -44,37 +41,12 @@ class HeadlineRepositoryImpl
         }
     }
 
-    override fun initializeHeadlinePagedData(
-        coroutineScope: CoroutineScope,
-        category: String?
-    ): LiveData<PagedList<Article>> {
-        dataSourceFactory = HeadlinePagedDataFactory(coroutineScope, remoteDataSource, category)
+    override fun initListHeadlinePagingData(category: String?): LiveData<PagingData<Article>> {
+        return Pager(
+            PagingConfig(15)
+        ) {
+            HeadlineListPagingSource(remoteDataSource, category)
+        }.liveData
 
-        val config: PagedList.Config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setPageSize(15)
-            .build()
-
-        return LivePagedListBuilder(dataSourceFactory, config).build()
     }
-
-    override fun getInitialNetworkResult(): LiveData<Result<List<Article>>> {
-        if (!::dataSourceFactory.isInitialized) throw RuntimeException("You haven't initiated DataSource.Factory ")
-        return Transformations.switchMap(
-            dataSourceFactory.resultData, HeadlinePagedDataSource::initialStateResultData
-        )
-    }
-
-    override fun getNetworkResult(): LiveData<Result<List<Article>>> {
-        if (!::dataSourceFactory.isInitialized) throw RuntimeException("You haven't initiated DataSource.Factory ")
-        return Transformations.switchMap(
-            dataSourceFactory.resultData, HeadlinePagedDataSource::stateResultData
-        )
-    }
-
-    override fun load(category: String?) {
-        if (!::dataSourceFactory.isInitialized) throw RuntimeException("You haven't initiated DataSource.Factory ")
-        dataSourceFactory.load(category)
-    }
-
 }

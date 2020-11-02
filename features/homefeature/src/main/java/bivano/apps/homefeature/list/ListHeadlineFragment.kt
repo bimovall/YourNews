@@ -13,9 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import bivano.apps.common.Result
-import bivano.apps.common.adapter.ArticlePagedListAdapter
+import bivano.apps.common.adapter.ArticleFooterLoadStateAdapter
+import bivano.apps.common.adapter.ArticlePagingDataAdapter
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.common.model.Article
 import bivano.apps.homefeature.R
@@ -35,7 +36,7 @@ class ListHeadlineFragment : Fragment() {
 
     private val listHeadlineViewModel by viewModels<ListHeadlineViewModel> { viewModelFactory }
 
-    private lateinit var adapter: ArticlePagedListAdapter
+    private lateinit var articleAdapter: ArticlePagingDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDependencyInjector()
@@ -80,22 +81,40 @@ class ListHeadlineFragment : Fragment() {
 
         chip_group.setOnCheckedChangeListener { group, checkedId ->
             val label = group.findViewById<Chip>(checkedId).text.toString().toLowerCase()
-            listHeadlineViewModel.load(label)
+            listHeadlineViewModel.initLoad(label)
         }
     }
 
     private fun initRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(context)
-        adapter = ArticlePagedListAdapter()
-        recyclerview.adapter = adapter
-        adapter.onItemClick = {
+        articleAdapter = ArticlePagingDataAdapter()
+        recyclerview.adapter =
+            articleAdapter.withLoadStateFooter(ArticleFooterLoadStateAdapter(articleAdapter::retry))
+        articleAdapter.onItemClick = {
             val action =
                 ListHeadlineFragmentDirections.actionListHeadlineFragmentToDetailFragment(it.url)
             findNavController().navigate(action)
         }
 
-        adapter.onItemLongClick = {
+        articleAdapter.onItemLongClick = {
             showDialog(it)
+        }
+
+        articleAdapter.addLoadStateListener {
+            when {
+                it.refresh is LoadState.Error -> {
+                    container_empty.visibility = View.VISIBLE
+                    recyclerview.visibility = View.GONE
+                    tv_error_title.text = "There's something wrong"
+                }
+                it.refresh is LoadState.NotLoading -> {
+                    container_empty.visibility = View.GONE
+                    recyclerview.visibility = View.VISIBLE
+                }
+                it.append is LoadState.Error -> {
+                    showErrorMessage((it.append as LoadState.Error).error.localizedMessage!!)
+                }
+            }
         }
     }
 
@@ -105,7 +124,8 @@ class ListHeadlineFragment : Fragment() {
             .setMessage("Do you want to save this news?")
             .setPositiveButton("Yes") { dialogInterface, i ->
                 listHeadlineViewModel.saveNews(article)
-                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT)
+                    .show()
                 dialogInterface.dismiss()
             }
             .setNegativeButton("No") { dialogInterface, i ->
@@ -115,43 +135,9 @@ class ListHeadlineFragment : Fragment() {
     }
 
     private fun observeData() {
-        listHeadlineViewModel.headlinePagedData.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
-
-        listHeadlineViewModel.initialNetworkStateData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Result.Loading -> {
-
-                }
-                is Result.Success -> {
-                    if (it.data.isEmpty()) {
-                        container_empty.visibility = View.VISIBLE
-                        recyclerview.visibility = View.GONE
-                    } else {
-                        container_empty.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                    }
-                }
-                is Result.ResponseError -> {
-                    showErrorMessage(it.failure.message!!)
-                }
-                is Result.GeneralError -> {
-
-                }
-            }
-        })
-
-        listHeadlineViewModel.networkStateData.observe(viewLifecycleOwner, Observer {
-            adapter.setNetworkState(it)
-            when (it) {
-                is Result.ResponseError -> {
-                    showErrorMessage(it.failure.message!!)
-                }
-                is Result.GeneralError -> {
-                    showErrorMessage("There's something wrong")
-                }
-            }
+        listHeadlineViewModel.headlinePaging.observe(viewLifecycleOwner, Observer {
+            recyclerview.scrollToPosition(0)
+            articleAdapter.submitData(lifecycle, it)
         })
     }
 

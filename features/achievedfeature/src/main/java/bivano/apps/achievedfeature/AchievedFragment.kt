@@ -16,7 +16,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.achievedfeature.di.DaggerAchievedComponent
-import bivano.apps.common.adapter.ArticlePagedListAdapter
+import bivano.apps.common.adapter.ArticleFooterLoadStateAdapter
+import bivano.apps.common.adapter.ArticlePagingDataAdapter
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.common.model.Article
 import bivano.apps.yournews.di.DynamicModuleDependencies
@@ -30,7 +31,7 @@ class AchievedFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var adapter: ArticlePagedListAdapter
+    private lateinit var adapter: ArticlePagingDataAdapter
 
     private val achievedViewModel by viewModels<AchievedViewModel> { viewModelFactory }
 
@@ -80,8 +81,9 @@ class AchievedFragment : Fragment() {
 
     private fun initRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
-        adapter = ArticlePagedListAdapter()
-        recyclerview.adapter = adapter
+        adapter = ArticlePagingDataAdapter()
+        recyclerview.adapter =
+            adapter.withLoadStateFooter(ArticleFooterLoadStateAdapter(adapter::retry))
         adapter.onItemClick = {
             val action = AchievedFragmentDirections.actionActionAchievedToDetailFragment(it.url)
             findNavController().navigate(action)
@@ -114,8 +116,8 @@ class AchievedFragment : Fragment() {
     }
 
     private fun observeData() {
-        achievedViewModel.resultData.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+        achievedViewModel.achievedPagingData.observe(viewLifecycleOwner, Observer {
+            adapter.submitData(viewLifecycleOwner.lifecycle, it)
         })
     }
 }

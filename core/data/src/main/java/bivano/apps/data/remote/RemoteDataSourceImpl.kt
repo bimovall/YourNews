@@ -4,6 +4,7 @@ import bivano.apps.common.Failure
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
 import bivano.apps.common.response.NewsResponse
+import com.google.gson.Gson
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -51,7 +52,12 @@ class RemoteDataSourceImpl
                     onErrorResponse.invoke(Failure(body.status, body.message, body.code))
                 }
             }
+        } else {
+            val gson = Gson()
+            val error = gson.fromJson(response.errorBody()!!.charStream().readText(), NewsResponse::class.java)
+            return onErrorResponse.invoke(Failure(error.status, error.message, error.code))
         }
+        //remove
         return onError.invoke()
     }
 }

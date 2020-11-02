@@ -1,8 +1,10 @@
 package bivano.apps.articlefeature
 
-import androidx.lifecycle.*
-import androidx.paging.PagedList
-import bivano.apps.common.Result
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import bivano.apps.common.model.Article
 import bivano.apps.data.repository.achieved.AchievedRepository
 import bivano.apps.data.repository.article.ArticleRepository
@@ -15,21 +17,19 @@ class ArticleViewModel
     private val achievedRepository: AchievedRepository
 ) : ViewModel() {
 
-    var networkStateData: LiveData<Result<List<Article>>> = MutableLiveData()
+    private val querySortData: MutableLiveData<Pair<String, String>> = MutableLiveData()
 
-    var initialNetworkStateData: LiveData<Result<List<Article>>> = MutableLiveData()
-
-    var articlePagedData: LiveData<PagedList<Article>> = MutableLiveData()
+    val articlePagingData = Transformations.switchMap(querySortData) {
+        articleRepository.initSearchArticlePagingData(it.first, it.second)
+            .cachedIn(viewModelScope)
+    }
 
     init {
-        articlePagedData = articleRepository.initializeArticlesPagedArticles(viewModelScope, "", "relevancy")
-        initialNetworkStateData = articleRepository.getInitialNetworkResult()
-        networkStateData = articleRepository.getNetworkResult()
+        loadArticle("", "relevancy")
     }
 
     fun loadArticle(query: String, sort: String) {
-        articleRepository.search(query, sort)
-        articlePagedData.value?.dataSource?.invalidate()
+        querySortData.value = Pair(query, sort)
     }
 
     fun saveNews(article: Article) {

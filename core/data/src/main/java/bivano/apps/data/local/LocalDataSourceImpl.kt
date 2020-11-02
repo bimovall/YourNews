@@ -1,10 +1,11 @@
 package bivano.apps.data.local
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import bivano.apps.common.Result
 import bivano.apps.common.model.Article
 import bivano.apps.data.local.dao.AchievedDao
 import bivano.apps.data.local.dao.HeadlineDao
+import bivano.apps.data.local.entity.AchievedEntity
 import bivano.apps.data.local.entity.HeadlineEntity
 import bivano.apps.data.local.mapper.toAchievedEntity
 import bivano.apps.data.local.mapper.toArticle
@@ -35,15 +36,11 @@ class LocalDataSourceImpl
         }
     }
 
-    override fun loadAchieved(query: String?): DataSource.Factory<Int, Article> {
+    override fun loadAchieved(query: String?): PagingSource<Int, AchievedEntity> {
         return if (query.isNullOrBlank()) {
-            achievedDao.getAchievedData().map {
-                it.toArticle()
-            }
+            achievedDao.getAchievedData()
         } else {
-            achievedDao.searchAchievedData("%$query%").map {
-                it.toArticle()
-            }
+            achievedDao.searchAchievedData("%$query%")
         }
     }
 

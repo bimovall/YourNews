@@ -1,12 +1,12 @@
 package bivano.apps.data.repository.achieved
 
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
+import androidx.paging.PagingData
 import bivano.apps.common.model.Article
 
 interface AchievedRepository {
 
-    fun loadAchieved(query: String?): LiveData<PagedList<Article>>
+    fun loadPagingAchieved(query: String?): LiveData<PagingData<Article>>
 
     suspend fun saveNews(article: Article)
 

@@ -13,10 +13,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import bivano.apps.articlefeature.di.DaggerArticleComponent
-import bivano.apps.common.Result
-import bivano.apps.common.adapter.ArticlePagedListAdapter
+import bivano.apps.common.adapter.ArticleFooterLoadStateAdapter
+import bivano.apps.common.adapter.ArticlePagingDataAdapter
 import bivano.apps.common.extension.debouncingText
 import bivano.apps.common.factory.ViewModelFactory
 import bivano.apps.common.model.Article
@@ -24,6 +25,7 @@ import bivano.apps.yournews.di.DynamicModuleDependencies
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.android.synthetic.main.fragment_article.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -37,7 +39,7 @@ class ArticleFragment : Fragment() {
 
     private val articleViewModel by viewModels<ArticleViewModel> { viewModelFactory }
 
-    private lateinit var articleAdapter: ArticlePagedListAdapter
+    private lateinit var articleAdapter: ArticlePagingDataAdapter
 
     private var lastQuery = ""
 
@@ -90,14 +92,17 @@ class ArticleFragment : Fragment() {
                 R.id.chip_popularity -> {
                     lastSort = "popularity"
                     articleViewModel.loadArticle(lastQuery, lastSort)
+                    recyclerview.scrollToPosition(0)
                 }
                 R.id.chip_latest -> {
                     lastSort = "publishedAt"
-                    articleViewModel.loadArticle(lastQuery, "publishedAt")
+                    articleViewModel.loadArticle(lastQuery, lastSort)
+                    recyclerview.scrollToPosition(0)
                 }
                 R.id.chip_relevance -> {
                     lastSort = "relevancy"
-                    articleViewModel.loadArticle(lastQuery, "relevancy")
+                    articleViewModel.loadArticle(lastQuery, lastSort)
+                    recyclerview.scrollToPosition(0)
                 }
             }
         }
@@ -105,9 +110,10 @@ class ArticleFragment : Fragment() {
 
     private fun initRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(requireContext())
-        articleAdapter = ArticlePagedListAdapter()
+        articleAdapter = ArticlePagingDataAdapter()
         articleAdapter.apply {
-            recyclerview.adapter = this
+            recyclerview.adapter =
+                withLoadStateFooter(ArticleFooterLoadStateAdapter(articleAdapter::retry))
             onItemClick = {
                 val action = ArticleFragmentDirections.actionActionArticleToDetailFragment(it.url)
                 findNavController().navigate(action)
@@ -115,6 +121,22 @@ class ArticleFragment : Fragment() {
 
             onItemLongClick = {
                 showDialog(it)
+            }
+
+            addLoadStateListener {
+                when {
+                    it.refresh is LoadState.Error -> {
+                        container_empty.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+                    }
+                    it.refresh is LoadState.NotLoading -> {
+                        container_empty.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+                    }
+                    it.append is LoadState.Error -> {
+                        showErrorMessage((it.append as LoadState.Error).error.localizedMessage!!)
+                    }
+                }
             }
         }
     }
@@ -125,7 +147,8 @@ class ArticleFragment : Fragment() {
             .setMessage("Do you want to save this news?")
             .setPositiveButton("Yes") { dialogInterface, i ->
                 articleViewModel.saveNews(article)
-                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Successfully Added To Achieved Menu", Toast.LENGTH_SHORT)
+                    .show()
                 dialogInterface.dismiss()
             }
             .setNegativeButton("No") { dialogInterface, i ->
@@ -135,43 +158,8 @@ class ArticleFragment : Fragment() {
     }
 
     private fun observeData() {
-        articleViewModel.networkStateData.observe(viewLifecycleOwner, Observer {
-            articleAdapter.setNetworkState(it)
-            when (it) {
-                is Result.ResponseError -> {
-                    showErrorMessage(it.failure.message!!)
-                }
-                is Result.GeneralError -> {
-                    showErrorMessage("There's something wrong")
-                }
-            }
-        })
-
-        articleViewModel.initialNetworkStateData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Result.Loading -> {
-
-                }
-                is Result.Success -> {
-                    if (it.data.isEmpty()) {
-                        container_empty.visibility = View.VISIBLE
-                        recyclerview.visibility = View.GONE
-                    } else {
-                        container_empty.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                    }
-                }
-                is Result.ResponseError -> {
-                    showErrorMessage(it.failure.message!!)
-                }
-                is Result.GeneralError -> {
-
-                }
-            }
-        })
-
-        articleViewModel.articlePagedData.observe(viewLifecycleOwner, Observer {
-            articleAdapter.submitList(it)
+        articleViewModel.articlePagingData.observe(viewLifecycleOwner, Observer {
+            articleAdapter.submitData(viewLifecycleOwner.lifecycle, it)
         })
 
     }
@@ -181,6 +169,7 @@ class ArticleFragment : Fragment() {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    @FlowPreview
     @ExperimentalCoroutinesApi
     private fun initSearchView() {
         edit_search
